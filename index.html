@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo List</title>
+    <!-- رابط Tailwind CSS عبر CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" href="img/r.png" type="image/png">
+</head>
+<body class="bg-gray-100">
+
+<div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
+  <div class="md:flex">
+    <div class="md:flex-shrink-0">
+      <img class="h-48 w-full object-cover md:w-48" src="https://th.bing.com/th/id/OIP.Tai24BuXPmuSiOsItwzedgAAAA?rs=1&pid=ImgDetMain" alt="ToDo List Image">
+    </div>
+    <div class="p-8">
+      <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">To-Do List</div>
+      <ul id="task-list" class="mt-4">
+        <!-- المهام ستتم إضافتها هنا بواسطة الجافا سكريبت -->
+      </ul>
+      <div class="mt-6">
+        <input id="task-input" type="text" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Add new task...">
+        <button id="add-task-btn" class="mt-2 w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 focus:outline-none focus:bg-indigo-600">Add Task</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<footer class="text-center mt-8 text-gray-500 text-sm">
+    &copy; 2024 ToDo List. All rights reserved | Makhlouf Chakib.
+</footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const taskList = document.getElementById("task-list");
+        const taskInput = document.getElementById("task-input");
+        const addTaskBtn = document.getElementById("add-task-btn");
+
+        // Load tasks from localStorage
+        const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+        // Function to add a new task
+        function addTask() {
+            const taskText = taskInput.value.trim();
+            if (taskText !== "") {
+                const li = document.createElement("li");
+                li.classList.add("flex", "justify-between", "items-center", "text-gray-500");
+
+                // Create task text element
+                const taskTextElement = document.createElement("span");
+                taskTextElement.textContent = taskText;
+
+                // Create delete button
+                const deleteBtn = document.createElement("button");
+                deleteBtn.textContent = "Delete";
+                deleteBtn.classList.add("ml-2", "px-2", "py-1", "bg-red-500", "text-white", "rounded", "text-xs");
+                deleteBtn.addEventListener("click", function() {
+                    taskList.removeChild(li);
+                    removeTask(taskText);
+                });
+
+                // Append elements to task item
+                li.appendChild(taskTextElement);
+                li.appendChild(deleteBtn);
+
+                taskList.appendChild(li);
+                tasks.push(taskText);
+                saveTasks();
+                taskInput.value = "";
+
+                // Add divider
+                const divider = document.createElement("hr");
+                taskList.appendChild(divider);
+            }
+        }
+
+        // Function to remove a task
+        function removeTask(taskText) {
+            const taskIndex = tasks.indexOf(taskText);
+            if (taskIndex !== -1) {
+                tasks.splice(taskIndex, 1);
+                saveTasks();
+            }
+        }
+
+        // Function to save tasks to localStorage
+        function saveTasks() {
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
+
+        // Load tasks from localStorage on page load
+        function loadTasks() {
+            tasks.forEach(function(taskText) {
+                const li = document.createElement("li");
+                li.classList.add("flex", "justify-between", "items-center", "text-gray-500");
+
+                // Create task text element
+                const taskTextElement = document.createElement("span");
+                taskTextElement.textContent = taskText;
+
+                // Create delete button
+                const deleteBtn = document.createElement("button");
+                deleteBtn.textContent = "Delete";
+                deleteBtn.classList.add("ml-2", "px-2", "py-1", "bg-red-500", "text-white", "rounded", "text-xs");
+                deleteBtn.addEventListener("click", function() {
+                    taskList.removeChild(li);
+                    removeTask(taskText);
+                });
+
+                // Append elements to task item
+                li.appendChild(taskTextElement);
+                li.appendChild(deleteBtn);
+
+                taskList.appendChild(li);
+
+                // Add divider
+                const divider = document.createElement("hr");
+                taskList.appendChild(divider);
+            });
+        }
+
+        loadTasks();
+
+        // Event listener for adding a task
+        addTaskBtn.addEventListener("click", addTask);
+    });
+</script>
+
+</body>
+</html>
